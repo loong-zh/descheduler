@@ -328,7 +328,10 @@ without following additional eviction policies.
       to background eviction. By listing evacuation requests or confronting the internal caches.
    2. Each descheduling plugin nominates a set of pods to be evicted.
    3. All the nominated pods are sorted based on the eviction-in-progress first priority.
-4. Pod eviction: the descheduler creates an evacuation request for each nominated pod until a limit is reached
+4. Pod eviction: the descheduler creates an evacuation request for each nominated pod until a limit is reached.
+   Including adding `evacuation.coordination.k8s.io/instigator_${EVACUATION_INSTIGATOR_SUBDOMAIN}`
+   finalizer to the request. In case an evacuation request for a nominated pod already exists
+   only the finalizer is added.
 
 ### Notes/Constraints/Caveats (Optional)
 
@@ -396,8 +399,6 @@ without following additional eviction policies.
   The cache will help with sorting and avoiding a duplicated eviction
   request of pods that were not annotated
   with `descheduler.alpha.kubernetes.io/eviction-in-progress` quickly enough.
-  Each item in the cache will have a TTL attribute to address cases where an eviction
-  request was intercepted by an external component but the component failed to annotate the pod.
 - Implement a new built-in sorting plugin: Extend the descheduling framework
   with a new sorting plugin that will prefer pods
   with `descheduler.alpha.kubernetes.io/eviction-in-progress` annotation or those
@@ -476,7 +477,7 @@ to implement the design.
   or wait until some of the eviction requests were completed
   to free a "bucket" for new evictions?
   **Answer**: The first implementation will not reset any evacuation request.
-  The descheduler will account for existing requests and update the internal counters accordingally.
+  The descheduler will account for existing requests and update the internal counters accordingly.
   In the future a mechanism for deleting too old evacuation requests can be introduced.
   I.e. based on a new `--max-evacuation-request-ttl` option.
 * The evacuation API proposal mentions more than a one entity can request an eviction.
