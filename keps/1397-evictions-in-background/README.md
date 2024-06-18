@@ -95,7 +95,7 @@ tags, and then generate with `hack/update-toc.sh`.
   - [Implementation Strategies](#implementation-strategies)
     - [API changes](#api-changes)
     - [v1alpha1](#v1alpha1)
-    - [v1alphaN or beta](#v1alphan-or-beta)
+    - [v1alphaN and beta](#v1alphan-and-beta)
     - [Code changes](#code-changes)
     - [Metrics](#metrics)
   - [Open Questions [optional]](#open-questions-optional)
@@ -278,7 +278,7 @@ The annotation based approach is a special case of invoking the eviction API:
 Given the evacuation API is still a work in progress without any
 existing implementation, the annotation based eviction can be seen
 as an v1alpha1 implemenation of this proposal.
-Integration with the evacuation API as an v1alphaN or beta implementation.
+Integration with the evacuation API as an v1alphaN and beta implementation.
 
 ### Workflow Description
 
@@ -316,7 +316,7 @@ without following additional eviction policies.
       2. Error code, resp. response text is checked to distinguish between
          a genuine error and a confirmation of an eviction in background.
 
-##### Evacuation API (v1alphaN or beta)
+##### Evacuation API (v1alphaN and beta)
 
 1. Policy configuration
    1. The cluster administrator configures the descheduler to enable the new functionality.
@@ -414,7 +414,7 @@ without following additional eviction policies.
   that are either annotated with `descheduler.alpha.kubernetes.io/eviction-in-progress`
   or are present in the cache of to-be-evicted pods.
 
-#### v1alphaN or beta
+#### v1alphaN and beta
 - Replace the current eviction API with the new
   [evacuation API](https://github.com/kubernetes/enhancements/pull/4565) by default.
   Both `descheduler.alpha.kubernetes.io/request-evict-only` and
