@@ -7,6 +7,7 @@ import (
 type Options struct {
 	policyGroupVersion         string
 	dryRun                     bool
+	report                     string
 	maxPodsToEvictPerNode      *uint
 	maxPodsToEvictPerNamespace *uint
 	maxPodsToEvictTotal        *uint
@@ -22,6 +23,11 @@ func NewOptions() *Options {
 
 func (o *Options) WithPolicyGroupVersion(policyGroupVersion string) *Options {
 	o.policyGroupVersion = policyGroupVersion
+	return o
+}
+
+func (o *Options) WithReport(report string) *Options {
+	o.report = report
 	return o
 }
 

@@ -42,6 +42,9 @@ type DeschedulerConfiguration struct {
 	// Dry run
 	DryRun bool
 
+	// Pod evicted report
+	Report string
+
 	// Node selectors
 	NodeSelector string
 

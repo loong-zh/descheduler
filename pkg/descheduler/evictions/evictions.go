@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"time"
 
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -34,6 +35,7 @@ import (
 
 	eutils "sigs.k8s.io/descheduler/pkg/descheduler/evictions/utils"
 	"sigs.k8s.io/descheduler/pkg/tracing"
+	"sigs.k8s.io/descheduler/pkg/utils"
 )
 
 // nodePodEvictedCount keeps count of pods evicted on node
@@ -47,6 +49,7 @@ type PodEvictor struct {
 	client                     clientset.Interface
 	policyGroupVersion         string
 	dryRun                     bool
+	report                     string
 	maxPodsToEvictPerNode      *uint
 	maxPodsToEvictPerNamespace *uint
 	maxPodsToEvictTotal        *uint
@@ -71,6 +74,7 @@ func NewPodEvictor(
 		eventRecorder:              eventRecorder,
 		policyGroupVersion:         options.policyGroupVersion,
 		dryRun:                     options.dryRun,
+		report:                     options.report,
 		maxPodsToEvictPerNode:      options.maxPodsToEvictPerNode,
 		maxPodsToEvictPerNamespace: options.maxPodsToEvictPerNamespace,
 		maxPodsToEvictTotal:        options.maxPodsToEvictTotal,
@@ -178,6 +182,19 @@ func (pe *PodEvictor) EvictPod(ctx context.Context, pod *v1.Pod, opts EvictOptio
 
 	if pe.metricsEnabled {
 		metrics.PodsEvicted.With(map[string]string{"result": "success", "strategy": opts.StrategyName, "namespace": pod.Namespace, "node": pod.Spec.NodeName, "profile": opts.ProfileName}).Inc()
+	}
+
+	if pe.report != "" {
+		pereport := utils.PodEvictedReport{
+			NodeName:     pod.Spec.NodeName,
+			NameSpace:    pod.Namespace,
+			PodName:      pod.Name,
+			StrategyName: opts.StrategyName,
+			Reason:       opts.Reason,
+			Labels:       pod.Labels,
+			EvictedTime:  time.Now(), //改为调用event的时间
+		}
+		pereport.Dump(pe.report)
 	}
 
 	if pe.dryRun {

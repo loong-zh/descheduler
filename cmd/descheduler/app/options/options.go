@@ -94,6 +94,7 @@ func (rs *DeschedulerServer) AddFlags(fs *pflag.FlagSet) {
 	fs.Int32Var(&rs.ClientConnection.Burst, "client-connection-burst", rs.ClientConnection.Burst, "Burst to use for interacting with kubernetes apiserver.")
 	fs.StringVar(&rs.PolicyConfigFile, "policy-config-file", rs.PolicyConfigFile, "File with descheduler policy configuration.")
 	fs.BoolVar(&rs.DryRun, "dry-run", rs.DryRun, "Execute descheduler in dry run mode.")
+	fs.StringVar(&rs.Report, "report", rs.Report, "Pod evicted report.")
 	fs.BoolVar(&rs.DisableMetrics, "disable-metrics", rs.DisableMetrics, "Disables metrics. The metrics are by default served through https://localhost:10258/metrics. Secure address, resp. port can be changed through --bind-address, resp. --secure-port flags.")
 	fs.StringVar(&rs.Tracing.CollectorEndpoint, "otel-collector-endpoint", "", "Set this flag to the OpenTelemetry Collector Service Address")
 	fs.StringVar(&rs.Tracing.TransportCert, "otel-transport-ca-cert", "", "Path of the CA Cert that can be used to generate the client Certificate for establishing secure connection to the OTEL in gRPC mode")
